@@ -17,10 +17,6 @@ for repo in "${repos[@]}"; do
   git clone "https://${username}:${token}@github.com/${username}/${repo}.git"
   cd "${repo}" || { echo "Failed to enter repo directory"; exit 1; }
   
-  # Get the current branch name
-  current_branch=$(git rev-parse --abbrev-ref HEAD)
-  
-
   
   # Get the current version number
   current_version=$(grep -oP '(?<=version: )\K[\d\.]+' version.yml)
@@ -61,18 +57,9 @@ for repo in "${repos[@]}"; do
   # Push the changes to the remote repository with authentication
   git push "https://${username}:${token}@github.com/${username}/${repo}.git" "${new_branch}"
 
-  # Switch back to the main branch
-  git checkout main
-
-  # Merge the new branch into main
-  git merge "${new_branch}"
-
-  # Push the changes to the main branch
-  git push "https://${username}:${token}@github.com/${username}/${repo}.git" main
-
   # Build the Docker image
   docker build -t "${docker_username}/${repo}:${new_version}" .
-
+  
   # Push the Docker image to Docker Hub
   docker push "${docker_username}/${repo}:${new_version}"
 
