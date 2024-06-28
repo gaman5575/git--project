@@ -1,13 +1,17 @@
 # Repository Setup and Script Execution Instructions
 
+Prerequisites
+1. Git: Ensure you have Git installed on your machine.
+2. Docker: Please make sure you have Docker installed and running.
+3. GitHub Token: Generate a personal access token on GitHub.
+4. Docker Hub Account: Have a Docker Hub account to push images.
+
 ## Dependencies and Requirements
 
 Before running the script, ensure you have the following installed:
 
 - Git
 - Docker
-- GitHub CLI (`gh`)
-
 
 Before running the script, ensure you have completed the following steps:
 
@@ -18,8 +22,6 @@ Before running the script, ensure you have completed the following steps:
 3. Give your token a descriptive name.
 4. Select the following scopes:
    - `repo`: Full control of private repositories.
-   - `read:org`: Read access to organization memberships.
-   - `workflow`: Write and read GitHub Actions workflows.
 5. Click "Generate token" and copy the token immediately.
 
 ## Step 2: Set up credentials.txt
@@ -31,7 +33,7 @@ Replace `<your GitHub username>` and `<your GitHub Personal Access Token>` with 
 
 ## Step 3: Update Script Parameters
 
-1. Open the script (`script.sh`) and update the following parameters:
+1. Open the script (`git-push.sh`) and update the following parameters:
    - `repos`: Add the names of the repositories you want to clone and update.
    - `docker_username`: Enter your Docker Hub username.
    - Ensure the script paths and commands match your project structure and requirements.
@@ -39,7 +41,7 @@ Replace `<your GitHub username>` and `<your GitHub Personal Access Token>` with 
 ## Step 4: Execute the Script
 
 1. Open a terminal.
-2. Navigate to the directory containing `script.sh`.
+2. Navigate to the directory containing `git-push.sh`.
 3. Run the script with the following command:
    ```bash
    ./script.sh
@@ -54,13 +56,11 @@ Updates the version number in version.yml.
 Creates or updates a Dockerfile in the repository.
 Commits changes and pushes them to the repository.
 Builds Docker images and pushes them to Docker Hub with appropriate tags.
-Sets the newly created branch as the default branch using GitHub CLI.
 
 
 ### Additional Notes:
-- Please ensure you have Docker installed and configured and have permission to perform these actions on the specified repositories.
+- Please make sure you have Docker installed and configured and have permission to perform these actions on the specified repositories.
 - Replace placeholders (`<your GitHub username>`, `<your GitHub Personal Access Token>`, etc.) with your actual information.
 - Customize the instructions and script overview to fit your specific project requirements.
-- Ensure the `README.md` file is placed in the root directory of your project alongside the `script.sh` and `credentials.txt` files.
+- Ensure the `README.md` file is placed in the root directory of your project alongside the `git-push.sh` and `credentials.txt` files.
 
-This README file provides clear and detailed instructions for setting up and executing the script, ensuring users have all the necessary information and steps before proceeding. You can adjust the content further based on specific project details or additional prerequisites.
