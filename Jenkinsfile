@@ -10,14 +10,16 @@ pipeline {
                     url: 'https://github.com/gaman5575/git-project.git'
             }
         }
-        stage('Run Script'){
-            steps{
-                sh 'chmod +x git-push.sh'
-                sh './git-push.sh'
+        stage('Run Script') {
+            steps {
+                // Bind Jenkins credentials for Git authentication
+                withCredentials([usernamePassword(credentialsId: 'git-credentials', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_TOKEN')]) {
+                    sh 'chmod +x git-push.sh'
+                    sh './git-push.sh'
+                }
             }
-        }
+       }
     }
-
     post{
         success{
             echo 'Script Runs Successfully!!!'
@@ -26,4 +28,5 @@ pipeline {
             echo 'Script Failed!!!'
         }
     }
+    
 }
