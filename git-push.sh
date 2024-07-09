@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Set the repositories to clone and update
-repos=("repos1" "repos2" "repos3" "repos4" "repos5")  # add your repository names here
+repos=("repos1" "repos2" )  # add your repository names here
 
 
 # branch name
@@ -9,7 +9,7 @@ new_branch=branch-1
 
 # git username and token
 username=gaman5575
-token=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
+token=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
 
 #  the Docker Hub username
 docker_username=gaman5575
@@ -69,4 +69,3 @@ for repo in "${repos[@]}"; do
   rm -rf "${repo}"
 
 done
-
