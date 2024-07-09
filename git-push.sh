@@ -6,11 +6,11 @@ source ./credentials.txt
 repos=("repos1" "repos2" "repos3" "repos4" "repos5")  # add your repository names here
 
 
-# Prompt the user to enter a new branch name
-read -p "Enter the new branch name: " new_branch
+# branch name
+new_branch=branch-1
 
-# Prompt the user to enter the Docker Hub username
-read -p "Enter your Docker Hub username: " docker_username
+#  the Docker Hub username
+docker_username=gaman5575
 
 # Clone each repository
 for repo in "${repos[@]}"; do
