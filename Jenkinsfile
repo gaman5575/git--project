@@ -10,7 +10,7 @@ pipeline{
                 url: 'https://github.com/gaman5575/git-project.git'
             }
         }
-        stage(' Run Script') {
+        stage(' Run Scripts') {
             steps {
                 // Runnig The Shell Script
                 sh 'sh git-push.sh'
