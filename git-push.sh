@@ -11,7 +11,7 @@ docker_username=gaman5575
 
 # Clone each repository
 for repo in "${repos[@]}"; do
-  git clone "https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/${GIT_USERNAME}/${repo}.git"
+  git clone "https://github.com/gaman5575/${repo}.git"
   cd "${repo}" || { echo "Failed to enter repo directory"; exit 1; }
   
   # Get the current version number
