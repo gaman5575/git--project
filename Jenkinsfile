@@ -1,6 +1,7 @@
 pipeline {
     agent {
         label 'git_project_node'
+    }
 
     environment {
         GIT_USERNAME = 'gaman5575'
