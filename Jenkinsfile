@@ -1,40 +1,29 @@
 pipeline {
-    agent any
-
-    environment {
-        GIT_USERNAME = 'gaman5575'
-        DOCKER_USERNAME = 'gaman5575'
+    agent {
+        label 'git_project_node'
     }
-
-    stages {
-        stage('Clone Repositories') {
-            environment {
-                GITHUB_TOKEN = credentials('GITHUB_TOKEN')
-            }
-            steps {
-                script {
-                    // Checkout the repository containing the git-push.sh script
-                    git credentialsId: 'GITHUB_TOKEN', url: 'https://github.com/gaman5575/git-project.git'
-                }
+    stages{
+        stage('Git Checkout'){
+            steps{
+                //Git chekout
+                git branch: 'main'
+                    url: 'https://github.com/gaman5575/git-project.git'
             }
         }
-
-        stage('Run Script') {
-            steps {
-                script {
-                    // Make the script executable
-                    sh 'chmod +x git-push.sh'
-
-                    // Run the script
-                    sh './git-push.sh'
-                }
+        stage('Run Script'){
+            steps{
+                sh 'chmod +x git-push.sh'
+                sh './git-push.sh'
             }
         }
     }
 
-    post {
-        always {
-            cleanWs()
+    post{
+        success{
+            echo 'Script Runs Successfully!!!'
+        }
+        failure{
+            echo 'Script Failed!!!'
         }
     }
 }
