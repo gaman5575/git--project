@@ -1,17 +1,17 @@
 #!/bin/bash
 
 # Set the repositories to clone and update
-repos=("repos1" "repos2")  # add your repository names here
+repos=("repos1" "repos2" )  # add your repository names here
 
 # branch name
 new_branch=branch-1
 
 # Docker Hub username
-docker_username=$DOCKER_USERNAME
+docker_username=gaman5575
 
 # Clone each repository
 for repo in "${repos[@]}"; do
-  git clone "https://${GIT_USERNAME}:${GITHUB_TOKEN}@github.com/${GIT_USERNAME}/${repo}.git"
+  git clone "https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/${GIT_USERNAME}/${repo}.git"
   cd "${repo}" || { echo "Failed to enter repo directory"; exit 1; }
   
   # Get the current version number
@@ -51,7 +51,7 @@ for repo in "${repos[@]}"; do
   git commit -m "Updated version to ${new_version}"
   
   # Push the changes to the remote repository with authentication
-  git push "https://${GIT_USERNAME}:${GITHUB_TOKEN}@github.com/${GIT_USERNAME}/${repo}.git" "${new_branch}"
+  git push "https://gaman5575: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@github.com/gaman5575/${repo}.git" "${new_branch}"
 
   # Build the Docker image
   docker build -t "${docker_username}/${repo}:${new_version}" .
