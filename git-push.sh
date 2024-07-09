@@ -1,13 +1,13 @@
 #!/bin/bash
 
 # Set the repositories to clone and update
-repos=("repos1" "repos2" )  # add your repository names here
-
-# branch name
-new_branch=branch-1
+repos=("repos1" "repos2")  # add your repository names here
 
 # Docker username
 docker_username=gaman5575
+
+# Get the branch name from the first argument
+new_branch=$1
 
 # Clone each repository
 for repo in "${repos[@]}"; do
