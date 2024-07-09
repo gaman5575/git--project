@@ -16,7 +16,7 @@ pipeline {
                 // Bind Jenkins credentials for Git authentication
                 withCredentials([usernamePassword(credentialsId: 'git-credentials', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_TOKEN')]) {
                     sh 'chmod +x git-push.sh'
-                    sh './git-push.sh raone
+                    sh './git-push.sh raone'
                 }
             }
         }
