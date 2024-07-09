@@ -3,22 +3,16 @@
 # Set the repositories to clone and update
 repos=("repos1" "repos2" )  # add your repository names here
 
-
 # branch name
 new_branch=branch-1
 
-# git username and token
-username=gaman5575
-token=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
-
-#  the Docker Hub username
-docker_username=gaman5575
+# Docker Hub username
+docker_username=$DOCKER_USERNAME
 
 # Clone each repository
 for repo in "${repos[@]}"; do
-  git clone "https://${username}:${token}@github.com/${username}/${repo}.git"
+  git clone "https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/${GIT_USERNAME}/${repo}.git"
   cd "${repo}" || { echo "Failed to enter repo directory"; exit 1; }
-  
   
   # Get the current version number
   current_version=$(grep -oP '(?<=version: )\K[\d\.]+' version.yml)
@@ -57,7 +51,7 @@ for repo in "${repos[@]}"; do
   git commit -m "Updated version to ${new_version}"
   
   # Push the changes to the remote repository with authentication
-  git push "https://${username}:${token}@github.com/${username}/${repo}.git" "${new_branch}"
+  git push "https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/${GIT_USERNAME}/${repo}.git" "${new_branch}"
 
   # Build the Docker image
   docker build -t "${docker_username}/${repo}:${new_version}" .
