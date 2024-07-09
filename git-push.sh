@@ -9,6 +9,9 @@ repos=("repos1" "repos2" "repos3" "repos4" "repos5")  # add your repository name
 # branch name
 new_branch=branch-1
 
+# git username and token
+
+
 #  the Docker Hub username
 docker_username=gaman5575
 
