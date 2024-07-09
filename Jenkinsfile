@@ -6,8 +6,8 @@ pipeline{
         stage('Git Checkout') {
             steps{
                 // Git Cloning Of Repos
-                git branch: 'main'
-                url: 'https://github.com/gaman5575/git-project.git'
+                git branch: 'main,
+                    url: 'https://github.com/gaman5575/git-project.git'
             }
         }
         stage(' Run Scripts') {
