@@ -1,8 +1,5 @@
 pipeline {
-    agent {
-        label 'git_project_node'
-    }
-
+    agent any
     stages {
         stage('Git Checkout') {
             steps {
