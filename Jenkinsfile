@@ -1,8 +1,5 @@
 pipeline {
     agent any
-    parameters {
-        string(name: 'newBranch', description: 'Enter the new branch', defaultValue: 'main')
-    }
     stages {
         stage('Git Checkout') {
             steps {
@@ -16,7 +13,7 @@ pipeline {
                 // Bind Jenkins credentials for Git authentication
                 withCredentials([usernamePassword(credentialsId: 'git-credentials', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_TOKEN')]) {
                     sh 'chmod +x git-push.sh'
-                    sh 'bash ./git-push.sh "${params.newBranch}"'
+                    sh './git-push.sh branch'
                 }
             }
         }
