@@ -13,6 +13,11 @@ new_branch=$1
 for repo in "${repos[@]}"; do
   git clone "https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/${GIT_USERNAME}/${repo}.git"
   cd "${repo}" || { echo "Failed to enter repo directory"; exit 1; }
+
+  # Configure git user
+  git config user.email "${GIT_USERNAME}@gmail.com"
+  git config user.name "${GIT_USERNAME}"
+
   
   # Get the current version number
   current_version=$(grep -oP '(?<=version: )\K[\d\.]+' version.yml)
@@ -53,6 +58,10 @@ for repo in "${repos[@]}"; do
   # Push the changes to the remote repository with authentication
   git push "https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/${GIT_USERNAME}/${repo}.git" "${new_branch}"
 
+
+  # Docker login
+  docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
+  
   # Build the Docker image
   docker build -t "${docker_username}/${repo}:${new_version}" .
   
