@@ -13,7 +13,7 @@ pipeline {
                 // Bind Jenkins credentials for Git and Docker authentication
                 withCredentials([
                     usernamePassword(credentialsId: 'git-credentials', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_TOKEN'),
-                    usernamePassword(credentialsId: 'docker-credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')
+                    usernamePassword(credentialsId: 'docker_credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')
                 ]) {
                     sh 'chmod +x git-push.sh'
                     sh './git-push.sh branch'
