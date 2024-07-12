@@ -22,16 +22,9 @@ for repo in "${repos[@]}"; do
   # Get the current version number
   current_version=$(grep -oP '(?<=version: )\K[\d\.]+' version.yml)
   
-  # Increment the version number
-  if [ $(echo "$current_version" | awk -F. '{print $2}') -eq 9 ]; then
-    new_major_version=$(echo "$current_version" | awk -F. '{print $1 + 1}')
-    new_minor_version=0
-  else
-    new_major_version=$(echo "$current_version" | awk -F. '{print $1}')
-    new_minor_version=$(echo "$current_version" | awk -F. '{print $2 + 1}')
-  fi
-  
-  new_version="${new_major_version}.${new_minor_version}"
+ # Increment the major version number
+  new_major_version=$(echo "$current_version" | awk -F. '{print $1 + 1}')
+  new_version="${new_major_version}.0.0"
   
   # Create a new branch with the entered name
   git checkout -b "${new_branch}"
