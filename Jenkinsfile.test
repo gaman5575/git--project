@@ -7,31 +7,44 @@ pipeline {
         DOCKER_USERNAME = 'gaman5575'
     }
 
+    parameters {
+        string(name: 'NEW_BRANCH', defaultValue: '', description: 'Branch name to create')
+    }
+
     stages {
         stage('Clone Repositories and Update Version') {
             steps {
                 script {
                     def repos = ["local1", "local2"]
                     repos.each { repo ->
-                        sh """
-                            git clone https://${env.GIT_CREDENTIALS_USR}:${env.GIT_CREDENTIALS_PSW}@github.com/${env.GIT_CREDENTIALS_USR}/${repo}.git
-                            cd ${repo}
-                            git config user.email "${env.GIT_CREDENTIALS_USR}@gmail.com"
-                            git config user.name "${env.GIT_CREDENTIALS_USR}"
-                            
-                            current_version=\$(grep -oP '(?<=version: )\\K[\\d\\.]+' version.yml)
-                            new_major_version=\$(echo "\$current_version" | awk -F. '{print \$1 + 1}')
-                            new_version="\${new_major_version}.0.0"
+                        // Check if the directory exists
+                        if (!fileExists(repo)) {
+                            // Clone the repository
+                            sh """
+                                git clone https://${env.GIT_CREDENTIALS_USR}:${env.GIT_CREDENTIALS_PSW}@github.com/${env.GIT_CREDENTIALS_USR}/${repo}.git
+                                cd ${repo}
+                                git config user.email "${env.GIT_CREDENTIALS_USR}@gmail.com"
+                                git config user.name "${env.GIT_CREDENTIALS_USR}"
+                                
+                                current_version=\$(grep -oP '(?<=version: )\\K[\\d\\.]+' version.yml)
+                                new_major_version=\$(echo "\$current_version" | awk -F. '{print \$1 + 1}')
+                                new_version="\${new_major_version}.0.0"
+                                
+                                // Define the branch name
+                                def new_branch_name = "new-version-${new_major_version}-release"
 
-                            git checkout -b "\${new_version}"
-                            sed -i "s/version: .*/version: \${new_version}/" version.yml
+                                git checkout -b "\${new_branch_name}"
+                                sed -i "s/version: .*/version: \${new_version}/" version.yml
 
-                            git add .
-                            git commit -m "Updated version to \${new_version}"
-                            git push https://${env.GIT_CREDENTIALS_USR}:${env.GIT_CREDENTIALS_PSW}@github.com/${env.GIT_CREDENTIALS_USR}/${repo}.git ${params.NEW_BRANCH}
+                                git add .
+                                git commit -m "Updated version to \${new_version}"
+                                git push https://${env.GIT_CREDENTIALS_USR}:${env.GIT_CREDENTIALS_PSW}@github.com/${env.GIT_CREDENTIALS_USR}/${repo}.git "\${new_branch_name}"
 
-                            cd ..
-                        """
+                                cd ..
+                            """
+                        } else {
+                            echo "Directory ${repo} already exists. Skipping clone."
+                        }
                     }
                 }
             }
@@ -65,4 +78,10 @@ pipeline {
             }
         }
     }
+}
+
+// Function to check if a directory exists
+def fileExists(path) {
+    def file = new File(path)
+    return file.exists() && file.isDirectory()
 }
