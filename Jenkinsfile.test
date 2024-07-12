@@ -17,7 +17,7 @@ pipeline {
         stage('Clone Repositories and Update Version.yaml') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'git-credentials', usernameVariable: 'GIT_CREDENTIALS_USR', passwordVariable: 'GIT_CREDENTIALS_PSW'),
-                                usernamePassword(credentialsId: 'docker-credentials', usernameVariable: 'DOOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                                usernamePassword(credentialsId: 'docker_credentials	', usernameVariable: 'DOOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                     script {
                         def repos = ["local1", "local2"]
                         repos.each { repo ->
@@ -36,7 +36,7 @@ pipeline {
 
                                 sed -i "s/version: .*/version: \${new_version}/" version.yml
                                 cat version.yml
-                                
+
                                 ls ../
 
                                 cd ..
