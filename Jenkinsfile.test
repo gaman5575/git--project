@@ -15,4 +15,5 @@ pipeline {
                     url: 'https://github.com/gaman5575/Jenkins-pipeline-with-ansible.git'
             }
         }
- 
+    }
+}
