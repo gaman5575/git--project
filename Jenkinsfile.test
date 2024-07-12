@@ -30,7 +30,7 @@ pipeline {
                             git config user.name '$env.GIT_CREDENTIALS_USR'
 
                             ls ../
-                            rm -rf ${repo}
+                            rm -rvf ../${repo}
 
                         """
                     }
