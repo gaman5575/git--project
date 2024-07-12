@@ -22,12 +22,12 @@ pipeline {
                     def repos = ["local1", "local2"]
                     repos.each { repo ->
                         sh """
-                            git clone https://${env.GIT_CREDENTIALS_USR}:${env.GIT_CREDENTIALS_PSW}@github.com/${env.GIT_CREDENTIALS_USR}/${repo}.git
+                            git clone https://$env.GIT_CREDENTIALS_USR:$env.GIT_CREDENTIALS_PSW@github.com/$env.GIT_CREDENTIALS_USR/${repo}.git
                             cd ${repo}
 
                             # configuring Git
-                            git config user.email "${env.GIT_CREDENTIALS_USR}@gmail.com"
-                            git config user.name "${env.GIT_CREDENTIALS_USR}"
+                            git config user.email '$env.GIT_CREDENTIALS_USR@gmail.com'
+                            git config user.name '$env.GIT_CREDENTIALS_USR'
 
                             ls ../
                             rm -rf ${repo}
