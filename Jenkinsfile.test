@@ -13,8 +13,6 @@ pipeline {
                 script {
                     def repos = ["local1", "local2"]
                     repos.each { repo ->
-                        // Checkout the repository if it doesn't exist
-                        checkoutRepoIfNeeded(repo)
                         
                         // Proceed with version update
                         sh """
@@ -73,17 +71,3 @@ pipeline {
     }
 }
 
-// Function to checkout repository if it doesn't exist
-def checkoutRepoIfNeeded(repo) {
-    if (!fileExists(repo)) {
-        sh "git clone https://${env.GIT_CREDENTIALS_USR}:${env.GIT_CREDENTIALS_PSW}@github.com/${env.GIT_CREDENTIALS_USR}/${repo}.git"
-    } else {
-        echo "Directory ${repo} already exists. Skipping clone."
-    }
-}
-
-// Function to check if a directory exists
-def fileExists(path) {
-    def file = file(path)
-    return file.exists() && file.directory
-}
