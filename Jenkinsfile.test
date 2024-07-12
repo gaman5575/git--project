@@ -1,0 +1,68 @@
+pipeline {
+    agent any
+
+    environment {
+        GIT_CREDENTIALS = credentials('git-credentials')  // Replace with your GitHub credentials ID
+        DOCKER_CREDENTIALS = credentials('docker_credentials')  // Replace with your Docker Hub credentials ID
+        REPOS = ["local1", "local2"]
+    }
+
+    parameters {
+        string(name: 'NEW_BRANCH', defaultValue: '', description: 'Branch name to create')
+    }
+
+    stages {
+        stage('Clone Repositories and Update Version') {
+            steps {
+                script {
+                    REPOS.each { repo ->
+                        sh """
+                            git clone https://${env.GIT_CREDENTIALS_USERNAME}:${env.GIT_CREDENTIALS_PASSWORD}@github.com/${env.GIT_CREDENTIALS_USERNAME}/${repo}.git
+                            cd ${repo}
+                            git config user.email "${env.GIT_CREDENTIALS_USERNAME}@gmail.com"
+                            git config user.name "${env.GIT_CREDENTIALS_USERNAME}"
+                            
+                            current_version=\$(grep -oP '(?<=version: )\\K[\\d\\.]+' version.yml)
+                            new_major_version=\$(echo "\$current_version" | awk -F. '{print \$1 + 1}')
+                            new_version="\${new_major_version}.0.0"
+
+                            git checkout -b ${params.NEW_BRANCH}
+                            sed -i "s/version: .*/version: \${new_version}/" version.yml
+                
+                            git add .
+                            git commit -m "Updated version to \${new_version}"
+                            git push https://${env.GIT_CREDENTIALS_USERNAME}:${env.GIT_CREDENTIALS_PASSWORD}@github.com/${env.GIT_CREDENTIALS_USERNAME}/${repo}.git ${params.NEW_BRANCH}
+
+                            cd ..
+                        """
+                    }
+                }
+            }
+        }
+
+        stage('Build and Push Docker Images') {
+            steps {
+                script {
+                    docker.withRegistry('https://index.docker.io/v1/', 'docker_credential') {
+                        REPOS.each { repo ->
+                            def image = docker.build("${env.DOCKER_USERNAME}/${repo}:${new_version}", "${repo}/.")
+                            image.push()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            success {
+              echo "Success!!!"
+            }
+                  failure {
+            // Notify failure
+            echo 'Failed!'
+            }
+        }
+    }
+}
