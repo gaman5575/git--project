@@ -56,8 +56,6 @@ pipeline {
                                 git commit -m "Updated version to \${new_version}"
                                 git push https://${GIT_CREDENTIALS_USR}:${GIT_CREDENTIALS_PSW}@github.com/${GIT_CREDENTIALS_USR}/${repo}.git "\${new_version}-release"
 
-                                ls ../
-
                                 cd ..
                                 rm -rvf ${repo}
 
