@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Set the repositories to clone and update
-repos=("repos1" "repos2" "repos3"  "repos4" "repos5" )  # add your repository names here
+repos=("python-project-1" "python-project-2" "python-project-3"  "python-project-4" "python-project-5" )  # add your repository names here
 
 # Docker username
 docker_username=gaman5575
