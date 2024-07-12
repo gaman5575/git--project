@@ -23,16 +23,26 @@ pipeline {
                         repos.each { repo ->
                             sh """
                                 # Cloning Repositories
+
                                 git clone https://${GIT_CREDENTIALS_USR}:${GIT_CREDENTIALS_PSW}@github.com/${GIT_CREDENTIALS_USR}/${repo}.git
                                 cd ${repo}
 
                                 # configuring Git
+
                                 git config user.email '${GIT_CREDENTIALS_USR}@gmail.com'
                                 git config user.name '${GIT_CREDENTIALS_USR}'
+
+                                # Finding version in version.yml
 
                                 current_version=\$(grep -oP '(?<=version: )\\K[\\d\\.]+' version.yml)
                                 new_major_version=\$(echo "\$current_version" | awk -F. '{print \$1 + 1}')
                                 new_version="\${new_major_version}.0.0"
+
+                                # Checkout to new branch
+
+                                git checkout -b "\${new_version}-release
+
+                                gir branch
 
                                 sed -i "s/version: .*/version: \${new_version}/" version.yml
                                 cat version.yml
