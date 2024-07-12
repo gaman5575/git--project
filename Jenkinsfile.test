@@ -7,10 +7,6 @@ pipeline {
         DOCKER_USERNAME = 'gaman5575'
     }
 
-    parameters {
-        string(name: 'NEW_BRANCH', defaultValue: '', description: 'Branch name to create')
-    }
-
     stages {
         stage('Clone Repositories and Update Version') {
             steps {
