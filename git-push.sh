@@ -32,17 +32,6 @@ for repo in "${repos[@]}"; do
   # Update the version in version.yml
   sed -i "s/version: .*/version: ${new_version}/" version.yml
   
-  # Create a Dockerfile if it doesn't exist
-  if [ ! -f Dockerfile ]; then
-    echo "FROM python:3.9-slim" > Dockerfile
-    echo "WORKDIR /app" >> Dockerfile
-    echo "LABEL version=\"${new_version}\"" >> Dockerfile
-    echo "COPY . /app" >> Dockerfile
-    echo "CMD [\"python\", \"app.py\"]" >> Dockerfile
-  else
-    # Update the version label in the Dockerfile
-    sed -i "s/LABEL version=\".*\"/LABEL version=\"${new_version}\"/" Dockerfile
-  fi
 
   # Add and commit the changes
   git add .
