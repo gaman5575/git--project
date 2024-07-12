@@ -4,7 +4,7 @@ pipeline {
     environment {
         GIT_CREDENTIALS = credentials('git-credentials')  // Replace with your GitHub credentials ID
         DOCKER_CREDENTIALS = credentials('docker_credentials')  // Replace with your Docker Hub credentials ID
-        REPOS = ["local1", "local2"]
+        DOCKER_USERNAME = 'gaman5575'
     }
 
     parameters {
@@ -15,12 +15,13 @@ pipeline {
         stage('Clone Repositories and Update Version') {
             steps {
                 script {
-                    REPOS.each { repo ->
+                    def repos = ["local1", "local2"]
+                    repos.each { repo ->
                         sh """
-                            git clone https://${env.GIT_CREDENTIALS_USERNAME}:${env.GIT_CREDENTIALS_PASSWORD}@github.com/${env.GIT_CREDENTIALS_USERNAME}/${repo}.git
+                            git clone https://${env.GIT_CREDENTIALS_USR}:${env.GIT_CREDENTIALS_PSW}@github.com/${env.GIT_CREDENTIALS_USR}/${repo}.git
                             cd ${repo}
-                            git config user.email "${env.GIT_CREDENTIALS_USERNAME}@gmail.com"
-                            git config user.name "${env.GIT_CREDENTIALS_USERNAME}"
+                            git config user.email "${env.GIT_CREDENTIALS_USR}@gmail.com"
+                            git config user.name "${env.GIT_CREDENTIALS_USR}"
                             
                             current_version=\$(grep -oP '(?<=version: )\\K[\\d\\.]+' version.yml)
                             new_major_version=\$(echo "\$current_version" | awk -F. '{print \$1 + 1}')
@@ -28,10 +29,10 @@ pipeline {
 
                             git checkout -b ${params.NEW_BRANCH}
                             sed -i "s/version: .*/version: \${new_version}/" version.yml
-                
+
                             git add .
                             git commit -m "Updated version to \${new_version}"
-                            git push https://${env.GIT_CREDENTIALS_USERNAME}:${env.GIT_CREDENTIALS_PASSWORD}@github.com/${env.GIT_CREDENTIALS_USERNAME}/${repo}.git ${params.NEW_BRANCH}
+                            git push https://${env.GIT_CREDENTIALS_USR}:${env.GIT_CREDENTIALS_PSW}@github.com/${env.GIT_CREDENTIALS_USR}/${repo}.git ${params.NEW_BRANCH}
 
                             cd ..
                         """
@@ -43,9 +44,10 @@ pipeline {
         stage('Build and Push Docker Images') {
             steps {
                 script {
-                    docker.withRegistry('https://index.docker.io/v1/', 'docker_credential') {
-                        REPOS.each { repo ->
-                            def image = docker.build("${env.DOCKER_USERNAME}/${repo}:${new_version}", "${repo}/.")
+                    def repos = ["local1", "local2"]
+                    docker.withRegistry('https://index.docker.io/v1/', 'docker_credentials') {
+                        repos.each { repo ->
+                            def image = docker.build("${DOCKER_USERNAME}/${repo}:${new_version}", "./${repo}")
                             image.push()
                         }
                     }
@@ -56,12 +58,14 @@ pipeline {
 
     post {
         always {
-            success {
-              echo "Success!!!"
-            }
-                  failure {
-            // Notify failure
-            echo 'Failed!'
+            echo "Pipeline completed"
+
+            script {
+                currentBuild.result = currentBuild.result ?: 'SUCCESS'
+                if (currentBuild.result == 'FAILURE') {
+                    echo "Pipeline failed!"
+                    // Add your failure notification logic here
+                }
             }
         }
     }
