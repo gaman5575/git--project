@@ -40,9 +40,9 @@ pipeline {
 
                                 # Checkout to new branch
 
-                                git checkout -b "\${new_version}-release
+                                git checkout -b "\${new_version}-release"
 
-                                git branch
+                                gir branch
 
                                 sed -i "s/version: .*/version: \${new_version}/" version.yml
                                 cat version.yml
