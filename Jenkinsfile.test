@@ -12,7 +12,7 @@ pipeline {
             steps {
              // Checkout your source code repository
                 git branch: 'main',
-                    url: 'https://github.com/gaman5575/Jenkins-pipeline-with-ansible.git'
+                    url: 'https://github.com/gaman5575/python-release.git'
             }
         }
 
