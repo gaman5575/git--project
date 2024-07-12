@@ -39,7 +39,7 @@ pipeline {
                                 new_version="\${new_major_version}.0.0"
 
                                 # new branch
-                                newbranch="\${new_version}-release"
+                                newbranch='${new_version}-release'
 
                                 # Checkout to new branch
 
