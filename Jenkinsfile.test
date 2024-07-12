@@ -1,68 +1,12 @@
 pipeline {
     agent any
 
-    environment {
-        DOCKER_USERNAME = 'gaman5575'
-    }
-
     stages {
-        stage('Git Checkout'){
+        stage('Trigger other pipelines') {
             steps {
-                // Checkout your source code repository
-                git branch: 'main',
-                    url: 'https://github.com/gaman5575/python-release.git'
-            }
-        }
-
-        stage('Clone Repositories and Update Version.yaml') {
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'git-credentials', usernameVariable: 'GIT_CREDENTIALS_USR', passwordVariable: 'GIT_CREDENTIALS_PSW'),
-                                usernamePassword(credentialsId: 'docker_credentials	', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                    script {
-                        def repos = ["local1", "local2"]
-                        repos.each { repo ->
-                            sh """
-                                # Cloning Repositories
-
-                                git clone https://${GIT_CREDENTIALS_USR}:${GIT_CREDENTIALS_PSW}@github.com/${GIT_CREDENTIALS_USR}/${repo}.git
-                                cd ${repo}
-
-                                # configuring Git
-
-                                git config user.email '${GIT_CREDENTIALS_USR}@gmail.com'
-                                git config user.name '${GIT_CREDENTIALS_USR}'
-
-                                # Finding version in version.yml
-
-                                current_version=\$(grep -oP '(?<=version: )\\K[\\d\\.]+' version.yml)
-                                new_major_version=\$(echo "\$current_version" | awk -F. '{print \$1 + 1}')
-                                new_version="\${new_major_version}.0.0"
-                                new_branch="\${new_version}-release"
-
-
-                                # Checkout to new branch
-
-                                git checkout -b "\${new_branch}"
-                                git branch
-
-                                # Adding new version in version.yml
-
-                                sed -i "s/version: .*/version: \${new_version}/" version.yml
-                                cat version.yml
-
-                                # Git add and push 
-                                
-                                git add .
-                                git commit -m "Updated version to \${new_version}"
-                                git push https://${GIT_CREDENTIALS_USR}:${GIT_CREDENTIALS_PSW}@github.com/${GIT_CREDENTIALS_USR}/${repo}.git "\${new_branch}"
-
-                                cd ..
-                                rm -rf ${repo}
-
-                            """
-                        }
-                    }
-                }
+                trigger([
+                    triggerRemoteJob('https://github.com/gaman5575/local11', 'main', 'Jenkinsfile')
+                ])
             }
         }
     }
