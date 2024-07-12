@@ -17,34 +17,31 @@ pipeline {
                 script {
                     def repos = ["local1", "local2"]
                     repos.each { repo ->
-                        // Check if the directory exists
-                        if (!fileExists(repo)) {
-                            // Clone the repository
-                            sh """
-                                git clone https://${env.GIT_CREDENTIALS_USR}:${env.GIT_CREDENTIALS_PSW}@github.com/${env.GIT_CREDENTIALS_USR}/${repo}.git
-                                cd ${repo}
-                                git config user.email "${env.GIT_CREDENTIALS_USR}@gmail.com"
-                                git config user.name "${env.GIT_CREDENTIALS_USR}"
-                                
-                                current_version=\$(grep -oP '(?<=version: )\\K[\\d\\.]+' version.yml)
-                                new_major_version=\$(echo "\$current_version" | awk -F. '{print \$1 + 1}')
-                                new_version="\${new_major_version}.0.0"
-                                
-                                // Define the branch name
-                                def new_branch_name = "new-version-${new_major_version}-release"
+                        // Checkout the repository if it doesn't exist
+                        checkoutRepoIfNeeded(repo)
+                        
+                        // Proceed with version update
+                        sh """
+                            cd ${repo}
+                            git config user.email "${env.GIT_CREDENTIALS_USR}@gmail.com"
+                            git config user.name "${env.GIT_CREDENTIALS_USR}"
+                            
+                            current_version=\$(grep -oP '(?<=version: )\\K[\\d\\.]+' version.yml)
+                            new_major_version=\$(echo "\$current_version" | awk -F. '{print \$1 + 1}')
+                            new_version="\${new_major_version}.0.0"
+                            
+                            // Define the branch name
+                            def new_branch_name = "new-version-${new_major_version}-release"
 
-                                git checkout -b "\${new_branch_name}"
-                                sed -i "s/version: .*/version: \${new_version}/" version.yml
+                            git checkout -b "\${new_branch_name}"
+                            sed -i "s/version: .*/version: \${new_version}/" version.yml
 
-                                git add .
-                                git commit -m "Updated version to \${new_version}"
-                                git push https://${env.GIT_CREDENTIALS_USR}:${env.GIT_CREDENTIALS_PSW}@github.com/${env.GIT_CREDENTIALS_USR}/${repo}.git "\${new_branch_name}"
+                            git add .
+                            git commit -m "Updated version to \${new_version}"
+                            git push https://${env.GIT_CREDENTIALS_USR}:${env.GIT_CREDENTIALS_PSW}@github.com/${env.GIT_CREDENTIALS_USR}/${repo}.git "\${new_branch_name}"
 
-                                cd ..
-                            """
-                        } else {
-                            echo "Directory ${repo} already exists. Skipping clone."
-                        }
+                            cd ..
+                        """
                     }
                 }
             }
@@ -80,8 +77,17 @@ pipeline {
     }
 }
 
+// Function to checkout repository if it doesn't exist
+def checkoutRepoIfNeeded(repo) {
+    if (!fileExists(repo)) {
+        sh "git clone https://${env.GIT_CREDENTIALS_USR}:${env.GIT_CREDENTIALS_PSW}@github.com/${env.GIT_CREDENTIALS_USR}/${repo}.git"
+    } else {
+        echo "Directory ${repo} already exists. Skipping clone."
+    }
+}
+
 // Function to check if a directory exists
 def fileExists(path) {
-    def file = new File(path)
-    return file.exists() && file.isDirectory()
+    def file = file(path)
+    return file.exists() && file.directory
 }
