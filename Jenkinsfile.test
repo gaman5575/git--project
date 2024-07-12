@@ -8,6 +8,10 @@ pipeline {
     }
 
     stages {
+        stage{
+            git branch: 'main'
+                URL: 'https://github.com/gaman5575/python-release.git'
+        }
         stage('Clone Repositories and Update Version') {
             steps {
                 script {
