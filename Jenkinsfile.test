@@ -38,12 +38,11 @@ pipeline {
                                 new_major_version=\$(echo "\$current_version" | awk -F. '{print \$1 + 1}')
                                 new_version="\${new_major_version}.0.0"
 
-                                # new branch
-                                newbranch='\${new_version}-release'
+
 
                                 # Checkout to new branch
 
-                                git checkout -b "\${newbranch}"
+                                git checkout -b "\${new_version}"
                                 git branch
 
                                 # Adding new version in version.yml
