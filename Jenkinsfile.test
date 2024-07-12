@@ -25,7 +25,7 @@ pipeline {
                             git clone https://${env.GIT_CREDENTIALS_USR}:${env.GIT_CREDENTIALS_PSW}@github.com/${env.GIT_CREDENTIALS_USR}/${repo}.git
                             cd ${repo}
 
-                            // Configuring Git
+                            # configuring Git
                             git config user.email "${env.GIT_CREDENTIALS_USR}@gmail.com"
                             git config user.name "${env.GIT_CREDENTIALS_USR}"
 
