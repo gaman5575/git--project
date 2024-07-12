@@ -8,71 +8,11 @@ pipeline {
     }
 
     stages {
-        stage{
-            git branch: 'main'
-                URL: 'https://github.com/gaman5575/python-release.git'
-        }
-        stage('Clone Repositories and Update Version') {
+        stage('Git Checkout'){
             steps {
-                script {
-                    def repos = ["local1", "local2"]
-                    repos.each { repo ->
-                        
-                        // Proceed with version update
-                        sh """
-                            git clone https://${env.GIT_CREDENTIALS_USR}:${env.GIT_CREDENTIALS_PSW}@github.com/${env.GIT_CREDENTIALS_USR}/${repo}.git
-                            cd ${repo}
-                            git config user.email "${env.GIT_CREDENTIALS_USR}@gmail.com"
-                            git config user.name "${env.GIT_CREDENTIALS_USR}"
-                            
-                            current_version=\$(grep -oP '(?<=version: )\\K[\\d\\.]+' version.yml)
-                            new_major_version=\$(echo "\$current_version" | awk -F. '{print \$1 + 1}')
-                            new_version="\${new_major_version}.0.0"
-                            
-                            // Define the branch name
-                            def new_branch_name = "new-version-${new_major_version}-release"
-
-                            git checkout -b "\${new_branch_name}"
-                            sed -i "s/version: .*/version: \${new_version}/" version.yml
-
-                            git add .
-                            git commit -m "Updated version to \${new_version}"
-                            git push https://${env.GIT_CREDENTIALS_USR}:${env.GIT_CREDENTIALS_PSW}@github.com/${env.GIT_CREDENTIALS_USR}/${repo}.git "\${new_branch_name}"
-
-                            cd ..
-                        """
-                    }
-                }
+             // Checkout your source code repository
+                git branch: 'main',
+                    url: 'https://github.com/gaman5575/Jenkins-pipeline-with-ansible.git'
             }
         }
-
-        stage('Build and Push Docker Images') {
-            steps {
-                script {
-                    def repos = ["local1", "local2"]
-                    docker.withRegistry('https://index.docker.io/v1/', 'docker_credentials') {
-                        repos.each { repo ->
-                            def image = docker.build("${DOCKER_USERNAME}/${repo}:${new_version}", "./${repo}")
-                            image.push()
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    post {
-        always {
-            echo "Pipeline completed"
-
-            script {
-                currentBuild.result = currentBuild.result ?: 'SUCCESS'
-                if (currentBuild.result == 'FAILURE') {
-                    echo "Pipeline failed!"
-                    // Add your failure notification logic here
-                }
-            }
-        }
-    }
-}
-
+ 
