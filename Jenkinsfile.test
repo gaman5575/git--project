@@ -15,5 +15,19 @@ pipeline {
                     url: 'https://github.com/gaman5575/Jenkins-pipeline-with-ansible.git'
             }
         }
+
+        stage('Clone Repositories and Update Version.yaml') {
+            steps {
+                script{
+                    def repos = [local1.local2]
+                    repos.each { repo ->
+                        sh """
+                            git clone https://${env.GIT_CREDENTIALS_USR}:${env.GIT_CREDENTIALS_PSW}@github.com/${env.GIT_CREDENTIALS_USR}/${repo}.git
+                            rm -rvf ${repo} 
+                        """
+                    }
+                }
+            }
+        }
     }
 }
