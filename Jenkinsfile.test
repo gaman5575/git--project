@@ -7,10 +7,6 @@ pipeline {
         DOCKER_USERNAME = 'gaman5575'
     }
 
-    parameters {
-        string(name: 'NEW_BRANCH', defaultValue: '', description: 'Branch name to create')
-    }
-
     stages {
         stage('Clone Repositories and Update Version') {
             steps {
@@ -27,7 +23,7 @@ pipeline {
                             new_major_version=\$(echo "\$current_version" | awk -F. '{print \$1 + 1}')
                             new_version="\${new_major_version}.0.0"
 
-                            git checkout -b ${params.NEW_BRANCH}
+                            git checkout -b "\${new_version}"
                             sed -i "s/version: .*/version: \${new_version}/" version.yml
 
                             git add .
