@@ -2,15 +2,13 @@ pipeline {
     agent any
 
     environment {
-        GIT_CREDENTIALS = credentials('git-credentials')  // Replace with your GitHub credentials ID
-        DOCKER_CREDENTIALS = credentials('docker_credentials')  // Replace with your Docker Hub credentials ID
         DOCKER_USERNAME = 'gaman5575'
     }
 
     stages {
         stage('Git Checkout'){
             steps {
-             // Checkout your source code repository
+                // Checkout your source code repository
                 git branch: 'main',
                     url: 'https://github.com/gaman5575/python-release.git'
             }
@@ -18,21 +16,23 @@ pipeline {
 
         stage('Clone Repositories and Update Version.yaml') {
             steps {
-                script{
-                    def repos = ["local1", "local2"]
-                    repos.each { repo ->
-                        sh """
-                            git clone https://$env.GIT_CREDENTIALS_USR:$env.GIT_CREDENTIALS_PSW@github.com/$env.GIT_CREDENTIALS_USR/${repo}.git
-                            cd ${repo}
+                withCredentials([usernamePassword(credentialsId: 'git-credentials', usernameVariable: 'GIT_CREDENTIALS_USR', passwordVariable: 'GIT_CREDENTIALS_PSW')]) {
+                    script {
+                        def repos = ["local1", "local2"]
+                        repos.each { repo ->
+                            sh """
+                                git clone https://${GIT_CREDENTIALS_USR}:${GIT_CREDENTIALS_PSW}@github.com/${GIT_CREDENTIALS_USR}/${repo}.git
+                                cd ${repo}
 
-                            # configuring Git
-                            git config user.email '$env.GIT_CREDENTIALS_USR@gmail.com'
-                            git config user.name '$env.GIT_CREDENTIALS_USR'
+                                # configuring Git
+                                git config user.email '${GIT_CREDENTIALS_USR}@gmail.com'
+                                git config user.name '${GIT_CREDENTIALS_USR}'
 
-                            ls ../
-                            rm -rvf ../${repo}
+                                ls ../
+                                rm -rvf ../${repo}
 
-                        """
+                            """
+                        }
                     }
                 }
             }
