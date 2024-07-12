@@ -37,12 +37,12 @@ pipeline {
                                 current_version=\$(grep -oP '(?<=version: )\\K[\\d\\.]+' version.yml)
                                 new_major_version=\$(echo "\$current_version" | awk -F. '{print \$1 + 1}')
                                 new_version="\${new_major_version}.0.0"
-
+                                new_branch="\${new_version}-release"
 
 
                                 # Checkout to new branch
 
-                                git checkout -b "\${new_version}-release"
+                                git checkout -b "\${new_branch}"
                                 git branch
 
                                 # Adding new version in version.yml
@@ -52,12 +52,12 @@ pipeline {
 
                                 # Git add and push 
                                 
-                                git add .
-                                git commit -m "Updated version to \${new_version}"
-                                git push https://${GIT_CREDENTIALS_USR}:${GIT_CREDENTIALS_PSW}@github.com/${GIT_CREDENTIALS_USR}/${repo}.git "\${new_version}-release"
+                                #git add .
+                                #git commit -m "Updated version to \${new_version}"
+                                #git push https://${GIT_CREDENTIALS_USR}:${GIT_CREDENTIALS_PSW}@github.com/${GIT_CREDENTIALS_USR}/${repo}.git "\${new_version}-release"
 
                                 cd ..
-                                rm -rvf ${repo}
+                                rm -rf ${repo}
 
                             """
                         }
