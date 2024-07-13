@@ -6,6 +6,7 @@ jenkins_user = os.getenv('JENKINS_USER')
 jenkins_token = os.getenv('JENKINS_TOKEN')
 jenkins_urls = [
     "http://192.168.125.147:8080/job/version-release-pipeline/build",
+    "http://192.168.125.147:8080/job/version-release-pipeline-2/build"
     # Add more URLs as needed
 ]
 
