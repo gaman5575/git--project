@@ -1,32 +1,38 @@
 pipeline {
     agent any
+
+    environment {
+        // Fetch credentials stored in Jenkins with the ID 'jenkins_credentials'
+        JENKINS_CREDENTIALS = credentials('jenkins_credentials')
+    }
+
     stages {
-        stage('Git Checkout') {
+        stage('Clone Repository') {
             steps {
-                // Git checkout
-                git branch: 'main',
-                    url: 'https://github.com/gaman5575/git-project.git'
+                // Replace 'your-git-repo-url' with the actual URL of your Git repository
+                git url: 'https://github.com/gaman5575/python-release.git', branch: 'main'
             }
         }
-        stage('Run Script') {
+
+        stage('Run Python Script') {
             steps {
-                // Bind Jenkins credentials for Git and Docker authentication
-                withCredentials([
-                    usernamePassword(credentialsId: 'git-credentials', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_TOKEN'),
-                    usernamePassword(credentialsId: 'docker_credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')
-                ]) {
-                    sh 'chmod +x git-push.sh'
-                    sh './git-push.sh branch'
+                // Set environment variables for the Python script and run it
+                withEnv(["JENKINS_USER=${JENKINS_CREDENTIALS_USR}", "JENKINS_TOKEN=${JENKINS_CREDENTIALS_PSW}"]) {
+                    sh 'python3 jenkins-trigger.py'
                 }
             }
         }
     }
+
     post {
+        always {
+            echo 'Pipeline finished.'
+        }
         success {
-            echo 'Script Runs Successfully!!!'
+            echo 'Pipeline completed successfully.'
         }
         failure {
-            echo 'Script Failed!!!'
+            echo 'Pipeline failed.'
         }
     }
 }
