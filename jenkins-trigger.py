@@ -6,10 +6,10 @@ jenkins_user = os.getenv('JENKINS_USER')
 jenkins_token = os.getenv('JENKINS_TOKEN')
 jenkins_urls = [
     "http://192.168.125.147:8080/job/python-project-1/build",
-    "http://192.168.125.147:8080/job/python-project-2/build",
-    "http://192.168.125.147:8080/job/python-project-3/build",
-    "http://192.168.125.147:8080/job/python-project-4/build",
-    "http://192.168.125.147:8080/job/python-project-5/build"
+    #"http://192.168.125.147:8080/job/python-project-2/build",
+    #"http://192.168.125.147:8080/job/python-project-3/build",
+    #"http://192.168.125.147:8080/job/python-project-4/build",
+    #"http://192.168.125.147:8080/job/python-project-5/build"
     
     
 ]
